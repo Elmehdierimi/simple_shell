@@ -4,7 +4,7 @@
  * builtins_list - Finds and executes a matching built-in function
  * @data: Pointer to the program's data structure
  * Return: The return value of the executed function if a match is found,
- *         otherwise returns -1.
+ * otherwise returns -1.
  */
 int builtins_list(data_of_program *data)
 {

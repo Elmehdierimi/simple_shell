@@ -93,4 +93,3 @@ int check_logic_ops(char *commands_array[], int i, char operators_array[])
 	}
 	return (i);
 }
-

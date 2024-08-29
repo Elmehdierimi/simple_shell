@@ -114,4 +114,3 @@ int set_alias(char *alias_string, data_of_program *data)
 
 	return (0);
 }
-
