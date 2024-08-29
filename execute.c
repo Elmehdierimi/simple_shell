@@ -1,47 +1,49 @@
 #include "shell.h"
+
 /**
- * execute - execute a command with its entire path variables.
- * @data: a pointer to the program's data
- * Return: If sucess returns zero, otherwise, return -1.
+ * execute - Runs a command by locating its executable path and handl execution
+ * @data: Pointer to the program's data structure
+ * Return: 0 on success, or -1 on failure
  */
 int execute(data_of_program *data)
 {
-	int retval = 0, status;
-	pid_t pidd;
+	int result = 0, exit_status;
+	pid_t process_id;
 
-	/* check for program in built ins */
-	retval = builtins_list(data);
-	if (retval != -1)/* if program was found in built ins */
-		return (retval);
+	/* Check if the command is a built-in command */
+	result = builtins_list(data);
+	if (result != -1) /* Command found in built-ins */
+		return (result);
 
-	/* check for program file system */
-	retval = find_program(data);
-	if (retval)
-	{/* if program not found */
-		return (retval);
+	/* Locate the executable file for the command */
+	result = find_program(data);
+	if (result != 0) /* Command not found */
+		return (result);
+
+	/* Command found, proceed to execute it */
+	process_id = fork(); /* Create a new process */
+	if (process_id == -1)
+	{ /* Fork failed */
+		perror(data->command_name);
+		exit(EXIT_FAILURE);
 	}
-	else
-	{/* if program was found */
-		pidd = fork(); /* create a child process */
-		if (pidd == -1)
-		{ /* if the fork call failed */
+	if (process_id == 0)
+	{ /* Child process */
+		result = execve(data->tokens[0], data->tokens, data->env);
+		if (result == -1) /* execve failed */
+		{
 			perror(data->command_name);
 			exit(EXIT_FAILURE);
 		}
-		if (pidd == 0)
-		{/* I am the child process, I execute the program*/
-			retval = execve(data->tokens[0], data->tokens, data->env);
-			if (retval == -1) /* if error when execve*/
-				perror(data->command_name), exit(EXIT_FAILURE);
-		}
-		else
-		{/* I am the father, I wait and check the exit status of the child */
-			wait(&status);
-			if (WIFEXITED(status))
-				errno = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				errno = 128 + WTERMSIG(status);
-		}
 	}
+	else
+	{ /* Parent process */
+		wait(&exit_status);
+		if (WIFEXITED(exit_status))
+			errno = WEXITSTATUS(exit_status);
+		else if (WIFSIGNALED(exit_status))
+			errno = 128 + WTERMSIG(exit_status);
+	}
+
 	return (0);
 }
