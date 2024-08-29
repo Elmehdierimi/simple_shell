@@ -1,46 +1,45 @@
 #include "shell.h"
 
 /**
- * tokenize - splits the input line into tokens using delimiters
- * @prog_data: a pointer to the program's data
- *
- * Return: nothing, sets tokens in prog_data
+ * tokenize - Splits the input string into tokens based on delimiters
+ * @data: Pointer to the program's data structure
  */
-void tokenize(data_of_program *prog_data)
+void tokenize(data_of_program *data)
 {
-	char *delim = " \t";
-	int idx1, idx2, num_tokens = 2, len;
+	char *delimiters = " \t";
+	int i, j, num_tokens = 2, input_length;
 
-	len = str_length(prog_data->input_line);
-	if (len > 0 && prog_data->input_line[len - 1] == '\n')
+	input_length = str_length(data->input_line);
+	if (input_length > 0 && data->input_line[input_length - 1] == '\n')
 	{
-		prog_data->input_line[len - 1] = '\0';
+		data->input_line[input_length - 1] = '\0';
 	}
 
-	for (idx1 = 0; prog_data->input_line[idx1]; idx1++)
+	for (i = 0; data->input_line[i]; i++)
 	{
-		for (idx2 = 0; delim[idx2]; idx2++)
+		for (j = 0; delimiters[j]; j++)
 		{
-			if (prog_data->input_line[idx1] == delim[idx2])
+			if (data->input_line[i] == delimiters[j])
 			{
 				num_tokens++;
 			}
 		}
 	}
 
-	prog_data->tokens = malloc(num_tokens * sizeof(char *));
-	if (prog_data->tokens == NULL)
+	data->tokens = malloc(num_tokens * sizeof(char *));
+	if (data->tokens == NULL)
 	{
-		perror(prog_data->program_name);
+		perror(data->program_name);
 		exit(errno);
 	}
 
-	idx1 = 0;
-prog_data->tokens[idx1] = str_duplicate(_strtok(prog_data->input_line, delim));
-	prog_data->command_name = str_duplicate(prog_data->tokens[0]);
+	i = 0;
+	data->tokens[i] = str_duplicate(_strtok(data->input_line, delimiters));
+	data->command_name = str_duplicate(data->tokens[0]);
 
-	while (prog_data->tokens[idx1])
+	while (data->tokens[i])
 	{
-		prog_data->tokens[++idx1] = str_duplicate(_strtok(NULL, delim));
+		i++;
+		data->tokens[i] = str_duplicate(_strtok(NULL, delimiters));
 	}
 }
