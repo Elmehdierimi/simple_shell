@@ -75,7 +75,7 @@ void handle_ctrl_c(int opr UNUSED);
 int _getline(data_of_program *data);
 
 /* split the each line for the logical operators if it exist */
-int check_logic_ops(char *array_commands[], int i, char array_operators[]);
+int check_logic_ops(char *commands_array[], int i, char operators_array[]);
 
 
 /*======== expansions.c ========*/
@@ -174,7 +174,7 @@ int builtin_unset_env(data_of_program *data);
 /*======== env_manage.c ========*/
 
 /* Gets the value of an environment variable */
-char *env_get_key(char *name, data_of_program *data);
+char *env_get_key(char *key, data_of_program *data);
 
 /* Overwrite the value of the environment variable */
 int env_set_key(char *key, char *value, data_of_program *data);
@@ -240,7 +240,7 @@ int count_characters(char *string, char *character);
 int print_alias(data_of_program *data, char *alias);
 
 /* get the alias name */
-char *get_alias(data_of_program *data, char *alias);
+char *get_alias(data_of_program *data, char *name);
 
 /* set the alias name */
 int set_alias(char *alias_string, data_of_program *data);
