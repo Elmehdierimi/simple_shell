@@ -12,16 +12,13 @@ int builtin_env(data_of_program *data)
 	char *var_backup = NULL;
 
 	if (data->tokens[1] == NULL)
-	{
 		print_environ(data);
-	}
 	else
 	{
 		for (i = 0; data->tokens[1][i]; i++)
 		{
 			if (data->tokens[1][i] == '=')
 			{
-
 				var_backup = str_duplicate(env_get_key(name_buffer, data));
 				if (var_backup != NULL)
 				{

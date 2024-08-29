@@ -75,7 +75,7 @@ void handle_ctrl_c(int opr UNUSED);
 int _getline(data_of_program *data);
 
 /* split the each line for the logical operators if it exist */
-int check_logic_ops(char *commands_array[], int i, char operators_array[]);
+int check_logic_ops(char *array_commands[], int i, char array_operators[]);
 
 
 /*======== expansions.c ========*/
