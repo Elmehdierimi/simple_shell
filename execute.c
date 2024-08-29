@@ -1,47 +1,49 @@
+#include "shell.h"
+
 /**
- * execute_command - create a new process to execute a command
- * @info: structure containing shell info and status
- *
- * Return: void
+ * execute - Runs a command by locating its executable path and handl execution
+ * @data: Pointer to the program's data structure
+ * Return: 0 on success, or -1 on failure
  */
-void execute_command(info_t *info)
+int execute(data_of_program *data)
 {
+	int result = 0, exit_status;
 	pid_t process_id;
 
-	process_id = fork();
+	/* Check if the command is a built-in command */
+	result = builtins_list(data);
+	if (result != -1) /* Command found in built-ins */
+		return (result);
 
+	/* Locate the executable file for the command */
+	result = find_program(data);
+	if (result != 0) /* Command not found */
+		return (result);
+
+	/* Command found, proceed to execute it */
+	process_id = fork(); /* Create a new process */
 	if (process_id == -1)
-	{
-		perror("Error:");
-		return;
+	{ /* Fork failed */
+		perror(data->command_name);
+		exit(EXIT_FAILURE);
 	}
-
 	if (process_id == 0)
-	{
-		if (execve(info->path, info->argv, get_environ(info)) == -1)
+	{ /* Child process */
+		result = execve(data->tokens[0], data->tokens, data->env);
+		if (result == -1) /* execve failed */
 		{
-			free_info(info, 1);
-
-			if (errno == EACCES)
-			{
-				exit(126);
-			}
-
-			exit(1);
+			perror(data->command_name);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
-	{
-		wait(&(info->status));
-
-		if (WIFEXITED(info->status))
-		{
-			info->status = WEXITSTATUS(info->status);
-
-			if (info->status == 126)
-			{
-				print_error(info, "Permission denied\n");
-			}
-		}
+	{ /* Parent process */
+		wait(&exit_status);
+		if (WIFEXITED(exit_status))
+			errno = WEXITSTATUS(exit_status);
+		else if (WIFSIGNALED(exit_status))
+			errno = 128 + WTERMSIG(exit_status);
 	}
+
+	return (0);
 }

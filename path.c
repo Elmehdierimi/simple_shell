@@ -1,89 +1,134 @@
 #include "shell.h"
 
-/**
- * is_executable - checks if the given path is an executable file
- * @info: pointer to the info structure
- * @filepath: path to the file
- *
- * Return: 1 if the file is executable, 0 otherwise
- */
-int is_executable(info_t *info, char *filepath)
-{
-	struct stat file_stat;
-
-	(void)info;
-	if (!filepath || stat(filepath, &file_stat) != 0)
-		return (0);
-
-	if (file_stat.st_mode & S_IFREG)
-	{
-		return (1);
-	}
-	return (0);
-}
+int check_file(char *full_path);
 
 /**
- * copy_chars - copies characters from a string within a specified range
- * @path_string: the PATH string
- * @start: starting index for copying
- * @end: stopping index for copying
- *
- * Return: pointer to a new buffer containing the copied characters
+ * find_program - Locates a program within the system PATH
+ * @data: Pointer to the program's data structure
+ * Return: 0 if successful, error code otherwise
  */
-char *copy_chars(char *path_string, int start, int end)
+int find_program(data_of_program *data)
 {
-	static char buffer[1024];
-	int i, j = 0;
+	int i = 0, ret_code = 0;
+	char **directories;
 
-	for (i = start; i < end; i++)
+	if (!data->command_name)
 	{
-		if (path_string[i] != ':')
-			buffer[j++] = path_string[i];
+		return (2);
 	}
-	buffer[j] = '\0';
-	return (buffer);
-}
 
-/**
- * locate_command - searches for a command in the PATH string
- * @info: pointer to the info structure
- * @path_string: the PATH string
- * @command: the command to locate
- *
- * Return: full path of the command if found, or NULL
- */
-char *locate_command(info_t *info, char *path_string, char *command)
-{
-	int i = 0, start_index = 0;
-	char *full_path;
-
-	if (!path_string)
-		return (NULL);
-	if (_strlen(command) > 2 && starts_with(command, "./"))
+	/* Check if command_name is a full path or executable in the current direct */
+	if (data->command_name[0] == '/' || data->command_name[0] == '.')
 	{
-		if (is_executable(info, command))
-			return (command);
+		return (check_file(data->command_name));
 	}
-	while (1)
+
+	free(data->tokens[0]);
+	data->tokens[0] = str_concat(str_duplicate("/"), data->command_name);
+	if (!data->tokens[0])
 	{
-		if (!path_string[i] || path_string[i] == ':')
+		return (2);
+	}
+
+	directories = tokenize_path(data); /* Search in the PATH */
+
+	if (!directories || !directories[0])
+	{
+		errno = 127;
+		return (127);
+	}
+	for (i = 0; directories[i]; i++)
+	{
+		/* Append the command_name to each path directory */
+		directories[i] = str_concat(directories[i], data->tokens[0]);
+		ret_code = check_file(directories[i]);
+		if (ret_code == 0 || ret_code == 126)
 		{
-			full_path = copy_chars(path_string, start_index, i);
-			if (*full_path == '\0')
-				_strcat(full_path, command);
-			else
-			{
-				_strcat(full_path, "/");
-				_strcat(full_path, command);
-			}
-			if (is_executable(info, full_path))
-				return (full_path);
-			if (!path_string[i])
-				break;
-			start_index = i + 1;
+			/* The file was found and has execute permissions */
+			errno = 0;
+			free(data->tokens[0]);
+			data->tokens[0] = str_duplicate(directories[i]);
+			free_array_of_pointers(directories);
+			return (ret_code);
 		}
-		i++;
 	}
-	return (NULL);
+	free(data->tokens[0]);
+	data->tokens[0] = NULL;
+	free_array_of_pointers(directories);
+	return (ret_code);
 }
 
+/**
+ * tokenize_path - Splits the PATH environment variable into directories
+ * @data: Pointer to the program's data structure
+ * Return: Array of path directories
+ */
+char **tokenize_path(data_of_program *data)
+{
+	int i = 0;
+	int num_directories = 2;
+	char **tokens = NULL;
+	char *PATH;
+
+	/* Retrieve the PATH value */
+	PATH = env_get_key("PATH", data);
+	if (!PATH || PATH[0] == '\0')
+	{
+		/* PATH not found */
+		return (NULL);
+	}
+
+	PATH = str_duplicate(PATH);
+
+	/* Count the number of directories in the PATH */
+	for (i = 0; PATH[i]; i++)
+	{
+		if (PATH[i] == ':')
+		{
+			num_directories++;
+		}
+	}
+
+	/* Allocate space for the array of directory pointers */
+	tokens = malloc(sizeof(char *) * num_directories);
+	if (!tokens)
+	{
+		free(PATH);
+		return (NULL);
+	}
+
+	/* Tokenize and duplicate each directory path */
+	i = 0;
+	tokens[i] = str_duplicate(_strtok(PATH, ":"));
+	while (tokens[i++])
+	{
+		tokens[i] = str_duplicate(_strtok(NULL, ":"));
+	}
+
+	free(PATH);
+	return (tokens);
+}
+
+/**
+ * check_file - Checks if a file exists, is not a directory, and is executable
+ * @full_path: Pointer to the full file path
+ * Return: 0 on success, error code if it does not exist
+ */
+int check_file(char *full_path)
+{
+	struct stat sb;
+
+	if (stat(full_path, &sb) != -1)
+	{
+		if (S_ISDIR(sb.st_mode) || access(full_path, X_OK))
+		{
+			errno = 126;
+			return (126);
+		}
+		return (0);
+	}
+
+	/* File does not exist */
+	errno = 127;
+	return (127);
+}
