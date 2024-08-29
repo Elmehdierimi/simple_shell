@@ -30,6 +30,7 @@ int main(int argc, char *argv[], char *env[])
 /**
  * handle_ctrl_c - Handles SIGINT (Ctrl+C) by printing a new prompt line
  * @opr: Optional parameter for the signal handler prototype
+ * @UNUSED: option of the prototype
  */
 void handle_ctrl_c(int opr UNUSED)
 {
