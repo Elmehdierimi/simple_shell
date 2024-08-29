@@ -101,7 +101,7 @@ int set_work_directory(data_of_program *data, char *new_dir)
  */
 int builtin_help(data_of_program *data)
 {
-	int i, length;
+	int i, length = 0;
 	char *help_msgs[6] = {NULL};
 
 	help_msgs[0] = HELP_MSG;

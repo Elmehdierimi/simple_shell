@@ -9,7 +9,7 @@
 char *env_get_key(char *key, data_of_program *data)
 {
 	int i;
-	int key_length;
+	int key_length = 0;
 
 	/* Validate the arguments */
 	if (key == NULL || data->env == NULL)
@@ -85,7 +85,7 @@ int env_set_key(char *key, char *value, data_of_program *data)
 int env_remove_key(char *key, data_of_program *data)
 {
 	int i;
-	int key_length;
+	int key_length = 0;
 
 	/* Validate the arguments */
 	if (key == NULL || data->env == NULL)
