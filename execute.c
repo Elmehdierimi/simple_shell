@@ -1,46 +1,48 @@
 #include "shell.h"
 /**
- * execute - execute a command with its entire path variables.
- * @data: a pointer to the program's data
- * Return: If sucess returns zero, otherwise, return -1.
+ * execute - function that execute a command with the vars of the path
+ * @data: pointer to the data of the program
+ * Return: 0 if yes else -1
  */
 int execute(data_of_program *data)
 {
-	int retval = 0, status;
+	/*refers to status and retreval*/
+	int s;
+	int r = 0;
 	pid_t pidd;
 
-	/* check for program in built ins */
-	retval = builtins_list(data);
-	if (retval != -1)/* if program was found in built ins */
-		return (retval);
+	r = builtins_list(data);
+	if (r != -1)
+		return (r);
 
-	/* check for program file system */
-	retval = find_program(data);
-	if (retval)
-	{/* if program not found */
-		return (retval);
+	r = find_program(data);
+	if (r)
+	{
+		return (r);/* if program is not found */
 	}
-	else
-	{/* if program was found */
-		pidd = fork(); /* create a child process */
+	else/* if program here was found then we will keep up*/
+	{
+
+		pidd = fork();
 		if (pidd == -1)
-		{ /* if the fork call failed */
+		{
 			perror(data->command_name);
 			exit(EXIT_FAILURE);
 		}
 		if (pidd == 0)
-		{/* I am the child process, I execute the program*/
-			retval = execve(data->tokens[0], data->tokens, data->env);
-			if (retval == -1) /* if error when execve*/
+		{
+			/*execute of the program*/
+			r = execve(data->tokens[0], data->tokens, data->env);
+			if (r == -1)
 				perror(data->command_name), exit(EXIT_FAILURE);
 		}
 		else
-		{/* I am the father, I wait and check the exit status of the child */
-			wait(&status);
-			if (WIFEXITED(status))
-				errno = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				errno = 128 + WTERMSIG(status);
+		{
+			wait(&s);
+			if (WIFEXITED(s))/*check the exit status*/
+				errno = WEXITSTATUS(s);
+			else if (WIFSIGNALED(s))
+				errno = 128 + WTERMSIG(s);
 		}
 	}
 	return (0);
