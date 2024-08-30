@@ -31,7 +31,8 @@ void expand_variables(data_of_program *data)
 			buffer_add(line, expansion);
 			buffer_add(line, data->input_line + index + 2);
 		}
-		else if (line[index] == '$' && (line[index + 1] == ' ' || line[index + 1] == '\0'))
+		else if (line[index] == '$' &&
+				(line[index + 1] == ' ' || line[index + 1] == '\0'))
 			continue;
 		else if (line[index] == '$')
 		{
@@ -44,12 +45,9 @@ void expand_variables(data_of_program *data)
 			buffer_add(line, expansion);
 		}
 	if (!str_compare(data->input_line, line, 0))
-	{
 		free(data->input_line);
 		data->input_line = str_duplicate(line);
-	}
 }
-
 /**
  * expand_alias - expans aliases
  * @data: a pointer to a struct of the program's data
