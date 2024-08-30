@@ -1,14 +1,13 @@
 #include "shell.h"
 
 /**
- * builtins_list - search for match and execute the associate builtin
- * @data: struct for the program's data
- * Return: Returns the return of the function executed is there is a match,
- * otherwise returns -1.
+ * builtins_list - function that search for the match and execute
+ * @data: structure of the data of the program
+ * Return: if the function executed is a match then yes, else -1
  **/
 int builtins_list(data_of_program *data)
 {
-	int iterator;
+	int s;/*s is basically the interator*/
 	builtins options[] = {
 		{"exit", builtin_exit},
 		{"help", builtin_help},
@@ -20,16 +19,12 @@ int builtins_list(data_of_program *data)
 		{NULL, NULL}
 	};
 
-/*walk through the structure*/
-	for (iterator = 0; options[iterator].builtin != NULL; iterator++)
+	for (s = 0; options[s].builtin != NULL; s++)
 	{
-/*if there is a match between the given command and a builtin,*/
-		if (str_compare(options[iterator].builtin, data->command_name, 0))
+		if (str_compare(options[s].builtin, data->command_name, 0))
 		{
-/*execute the function, and return the return value of the function*/
-			return (options[iterator].function(data));
+			return (options[s].function(data));
 		}
-/*if there is no match return -1 */
 	}
-	return (-1);
+	return (-1);/*if no match than return the -1*/
 }

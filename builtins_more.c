@@ -7,13 +7,13 @@
  */
 int builtin_exit(data_of_program *data)
 {
-	int i;
+	int index;
 
 	if (data->tokens[1] != NULL)
 	{/*if exists arg for exit, check if is a number*/
-		for (i = 0; data->tokens[1][i]; i++)
-			if ((data->tokens[1][i] < '0' || data->tokens[1][i] > '9')
-				&& data->tokens[1][i] != '+')
+		for (index = 0; data->tokens[1][index]; index++)
+			if ((data->tokens[1][index] < '0' || data->tokens[1][index] > '9')
+				&& data->tokens[1][index] != '+')
 			{/*if is not a number*/
 				errno = 2;
 				return (2);
@@ -141,18 +141,18 @@ int builtin_help(data_of_program *data)
  */
 int builtin_alias(data_of_program *data)
 {
-	int i = 0;
+	int index = 0;
 
 	/* if there are no arguments, print all environment */
 	if (data->tokens[1] == NULL)
 		return (print_alias(data, NULL));
 
-	while (data->tokens[++i])
+	while (data->tokens[++index])
 	{/* if there are arguments, set or print each env variable*/
-		if (count_characters(data->tokens[i], "="))
-			set_alias(data->tokens[i], data);
+		if (count_characters(data->tokens[index], "="))
+			set_alias(data->tokens[index], data);
 		else
-			print_alias(data, data->tokens[i]);
+			print_alias(data, data->tokens[index]);
 	}
 
 	return (0);
