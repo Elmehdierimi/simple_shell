@@ -1,41 +1,43 @@
 #include "shell.h"
 /**
- * tokenize - this function separate the string using a designed delimiter
- * @data: a pointer to the program's data
- * Return: an array of the different parts of the string
+ * tokenize - function separate string using delimiter
+ * @data: pointer
+ * Return: array of the string
  */
 void tokenize(data_of_program *data)
 {
-	char *delimiter = " \t";
-	int i, j, counter = 2, length;
+	char *delimit = " \t";
+	int s, j;
+	int count = 2;
+	int len;
 
-	length = str_length(data->input_line);
-	if (length)
+	len = strlen(data->input_line);
+	if (len)
 	{
-		if (data->input_line[length - 1] == '\n')
-			data->input_line[length - 1] = '\0';
+		if (data->input_line[len - 1] == '\n')
+			data->input_line[len - 1] = '\0';
 	}
 
-	for (i = 0; data->input_line[i]; i++)
+	for (s = 0; data->input_line[s]; s++)
 	{
-		for (j = 0; delimiter[j]; j++)
+		for (r = 0; delimit[r]; r++)
 		{
-			if (data->input_line[i] == delimiter[j])
-				counter++;
+			if (data->input_line[s] == delimit[r])
+				count++;
 		}
 	}
 
-	data->tokens = malloc(counter * sizeof(char *));
+	data->tokens = malloc(count * sizeof(char *));
 	if (data->tokens == NULL)
 	{
 		perror(data->program_name);
 		exit(errno);
 	}
-	i = 0;
-	data->tokens[i] = str_duplicate(_strtok(data->input_line, delimiter));
+	s = 0;
+	data->tokens[s] = str_duplicate(_strtok(data->input_line, delimit));
 	data->command_name = str_duplicate(data->tokens[0]);
-	while (data->tokens[i++])
+	while (data->tokens[s++])
 	{
-		data->tokens[i] = str_duplicate(_strtok(NULL, delimiter));
+		data->tokens[s] = str_duplicate(_strtok(NULL, delimit));
 	}
 }

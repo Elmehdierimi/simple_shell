@@ -1,14 +1,14 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-/* Prompt to be printed */
-#define PROMPT_MSG "$" /* Needed to work with signal */
-
-/* Resume from the unused attibute */
-#define UNUSED __attribute__((unused))
-
-/* buffer size for each read call in _getline */
+/*buffer size _getlines*/
 #define BUFFER_SIZE 1024
+
+/*Prompt to get printed*/
+#define PROMPT_MSG "$"
+
+/*Resume the unused attibute*/
+#define UNUSED __attribute__((unused))
 
 /************* FORMATTED STRING FOR HELP BUILT IN **************/
 
@@ -26,21 +26,11 @@
 "	Exits the shell with a status of N.  If N is omitted, the exit status\n"\
 "	is that of the last command executed.\n\n"
 
-#define HELP_ENV_MSG "env=\n"\
-"env:\tenv \n\n"\
-"	Print environment.\n\n"\
-"	The env command will be print a complete list of enviroment variables.\n\n"
-
 #define HELP_SETENV_MSG "setenv=\n"\
 "setenv:\tsetenv VARIABLE VALUE\n\n"\
 "	Change or add an environment variable.\n\n"\
 "	initialize a new environment variable, or modify an existing one\n"\
 "	When there are not correct numbers of arguments print error message.\n\n"
-
-#define HELP_UNSETENV_MSG "unsetenv=\n"\
-"unsetenv:\tunsetenv VARIABLE\n\n"\
-"	The unsetenv function deletes one variable from the environment.\n\n"\
-"	Wen there are not correct numbers of arguments print error message.\n\n"
 
 #define HELP_MSG "help=\n"\
 "help:\thelp [BUILTIN_NAME]\n\n"\
@@ -57,4 +47,14 @@
 "	unset\t[variable]\n"\
 "	help\t[built_name]\n\n"
 
-#endif
+#define HELP_UNSETENV_MSG "unsetenv=\n"\
+"unsetenv:\tunsetenv VARIABLE\n\n"\
+"	The unsetenv function deletes one variable from the environment.\n\n"\
+"	Wen there are not correct numbers of arguments print error message.\n\n"
+
+#define HELP_ENV_MSG "env=\n"\
+"env:\tenv \n\n"\
+"	Print environment.\n\n"\
+"	The env command will be print a complete list of enviroment variables.\n\n"
+
+#endif /*helpers*/

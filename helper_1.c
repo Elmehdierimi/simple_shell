@@ -1,9 +1,9 @@
 #include "shell.h"
 
 /**
- * free_recurrent_data - free the fields needed each loop
- * @data: struct of the program's data
- * Return: Nothing
+ * free_recurrent_data - funct that free the fields in each loop
+ * @data: the structure of data in the program
+ * Return: void
  */
 void free_recurrent_data(data_of_program *data)
 {
@@ -20,9 +20,9 @@ void free_recurrent_data(data_of_program *data)
 }
 
 /**
- * free_all_data - free all field of the data
- * @data: struct of the program's data
- * Return: Nothing
+ * free_all_data - it free fields of datas
+ * @data: the structure of the data of the program
+ * Return: void
  */
 void free_all_data(data_of_program *data)
 {
@@ -37,19 +37,19 @@ void free_all_data(data_of_program *data)
 }
 
 /**
- * free_array_of_pointers - frees each pointer of an array of pointers and the
- * array too
- * @array: array of pointers
- * Return: nothing
+ * free_array_of_pointers - it frees pointer of rray of pointers
+ * & the array 2
+ * @array: an array of ptrs
+ * Return: void
  */
 void free_array_of_pointers(char **array)
 {
-	int i;
+	int s;
 
 	if (array != NULL)
 	{
-		for (i = 0; array[i]; i++)
-			free(array[i]);
+		for (s = 0; array[s]; s++)
+			free(array[s]);
 
 		free(array);
 		array = NULL;
