@@ -1,85 +1,84 @@
 #include "shell.h"
 
 /**
- * long_to_string - converts a number to a string.
- * @number: number to be converten in an string.
- * @string: buffer to save the number as string.
+ * long_to_string - from int to str
+ * @number: number
+ * @string: saving buffer of the number as a string
  * @base: base to convert number
  *
- * Return: Nothing.
+ * Return: void
  */
 void long_to_string(long number, char *string, int base)
 {
-	int index = 0, inNegative = 0;
-	long cociente = number;
 	char letters[] = {"0123456789abcdef"};
+	int i = 0;/*as the index*/
+	int inNegative = 0;
+	long c = number;
 
-	if (cociente == 0)
-		string[index++] = '0';
+	if (c == 0)
+		string[i++] = '0';
 
 	if (string[0] == '-')
 		inNegative = 1;
 
-	while (cociente)
+	while (c)
 	{
-		if (cociente < 0)
-			string[index++] = letters[-(cociente % base)];
+		if (c < 0)
+			string[i++] = letters[-(c % base)];
 		else
-			string[index++] = letters[cociente % base];
-		cociente /= base;
+			string[i++] = letters[c % base];
+		c /= base;
 	}
 	if (inNegative)
-		string[index++] = '-';
+		string[i++] = '-';
 
-	string[index] = '\0';
+	string[i] = '\0';
 	str_reverse(string);
 }
 
 
 /**
- * _atoi - convert a string to an integer.
- *
- * @s: pointer to str origen.
- * Return: int of string or 0.
+ * _atoi - from string to an int
+ * @s: ptr to str
+ * Return: that int str ot 0
  */
 int _atoi(char *s)
 {
-	int sign = 1;
-	unsigned int number = 0;
-	/*1- analisys sign*/
+	unsigned int num = 0;
+	int r = 1;
+
 	while (!('0' <= *s && *s <= '9') && *s != '\0')
 	{
 		if (*s == '-')
-			sign *= -1;
+			r *= -1;
 		if (*s == '+')
-			sign *= +1;
+			r *= +1;
 		s++;
 	}
 
-	/*2 - extract the number */
 	while ('0' <= *s && *s <= '9' && *s != '\0')
 	{
 
-		number = (number * 10) + (*s - '0');
+		num = (num * 10) + (*s - '0');
 		s++;
 	}
-	return (number * sign);
+	return (num * r);
 }
 
 /**
- * count_characters - count the coincidences of character in string.
- *
- * @string: pointer to str origen.
- * @character: string with  chars to be counted
- * Return: int of string or 0.
+ * count_characters - funct that counts coincidences char in str
+ * @string: ptr
+ * @character: str with chars
+ * Return: int of str or 0
  */
 int count_characters(char *string, char *character)
 {
-	int i = 0, counter = 0;
+	int counter = 0;
+	int s = 0;
 
-	for (; string[i]; i++)
+	for (; string[s]; s++)
 	{
-		if (string[i] == character[0])
+		if (string[s] == character[0])
 			counter++;
 	}
 	return (counter);

@@ -26,7 +26,7 @@ int str_length(char *string)
 char *str_duplicate(char *string)
 {
 	char *result;
-	int length, i;
+	int length, index;
 
 	if (string == NULL)
 		return (NULL);
@@ -41,9 +41,9 @@ char *str_duplicate(char *string)
 		perror("Error");
 		return (NULL);
 	}
-	for (i = 0; i < length ; i++)
+	for (index = 0; index < length ; index++)
 	{
-		result[i] = string[i];
+		result[index] = string[index];
 	}
 
 	return (result);
@@ -142,13 +142,13 @@ char *str_concat(char *string1, char *string2)
 void str_reverse(char *string)
 {
 
-	int i = 0, length = str_length(string) - 1;
+	int index = 0, length = str_length(string) - 1;
 	char hold;
 
-	while (i < length)
+	while (index < length)
 	{
-		hold = string[i];
-		string[i++] = string[length];
+		hold = string[index];
+		string[index++] = string[length];
 		string[length--] = hold;
 	}
 }
