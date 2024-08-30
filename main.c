@@ -8,8 +8,8 @@
  */
 int main(int argc, char *argv[], char *env[])
 {
-	char *prompt = "";
 	data_of_program data_struct = {NULL}, *data = &data_struct;
+	char *prompt = "";
 
 	inicialize_data(data, argc, argv, env);
 
@@ -89,20 +89,20 @@ void inicialize_data(data_of_program *data, int argc, char *argv[], char **env)
  */
 void sisifo(char *prompt, data_of_program *data)
 {
-	int error = 0;
-	int strlen = 0;
+	int error_code = 0;
+	int string_len = 0;
 
 	while (++(data->exec_counter))
 	{
 		_print(prompt);
-		error = strlen = _getline(data);
+		error_code = string_len = _getline(data);
 
-		if (error == EOF)
+		if (error_code == EOF)
 		{
 			free_all_data(data);
 			exit(errno);
 		}
-		if (strlen >= 1)
+		if (string_len >= 1)
 		{
 			expand_alias(data);
 			expand_variables(data);
@@ -110,9 +110,9 @@ void sisifo(char *prompt, data_of_program *data)
 			if (data->tokens[0])
 			{
 				/* text prompt=> execute */
-				error = execute(data);
-				if (error != 0)
-					_print_error(error, data);
+				error_code = execute(data);
+				if (error_code != 0)
+					_print_error(error_code, data);
 			}
 			free_recurrent_data(data);
 		}
